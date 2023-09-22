@@ -21,7 +21,7 @@ void generate_selections(int a[], int n, int k, int b[], void *data, void (*proc
  * In this assignment, you have to generate all possible splits into buf[]
  * and call process_split() to process them.
  * The dictionary parameter is an array of words, sorted in dictionary order.
- * nwords is the number of words in this dictionary.
+ * nwords is the number of words in this dictionary.hh
  */
 void generate_splits(const char *source, const char *dictionary[], int nwords, char buf[], void *data, void (*process_split)(char buf[], void *data))
 {
