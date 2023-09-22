@@ -29,35 +29,7 @@ void generate_selections_util(int a[], int n,int k, int b[], int index, int star
 
 void generate_selections(int a[], int n, int k,int b[],void *data, void(*process_selection)(int *b,int k, void *data)) 
 {
-    if (k>n ||n<=0||k<=0)       //// For invalid input
-    {
-        printf("Invalid Input");
-        return;
-    }
-
     generate_selections_util(a, n, k, b, 0,0, data, process_selection);     //// Call the selecting function
-}
-
-void process_selection(int *b, int k, void *data) 
-{
-    for (int i=0; i<k;i++) 
-    {
-        printf("%d ", b[i]);
-    }
-    printf("\n");
-}
-
-//// Call the main function
-int main() {
-    
-    int a[] = {5,6,2,9,1,3};
-    int n = sizeof(a)/sizeof(a[0]);
-    int k = 4;
-    int b[k];
-
-    generate_selections(a, n, k, b, NULL, process_selection);
-
-    return 0;
 }
 
 
@@ -72,35 +44,55 @@ int main() {
 #include <stdio.h>
 #include <string.h>
 
-void generate_splits(const char *source, const char *dictionary[], int nwords, char buf[], void *data, void (*process_split)(char buf[], void *data)) {
-    int source_len = strlen(source);
-    
-    void generate(int start, int buf_index) {
-        if (start == source_len) {
-            process_split(buf, data);
-            return;
-        }
-        
-        for (int i = 0; i < nwords; i++) {
-            const char *word = dictionary[i];
-            int word_len = strlen(word);
-            
-            if (strncmp(source + start, word, word_len) == 0) {
-                if (buf_index != 0) {
-                    buf[buf_index++] = ' ';
+void process_split(char buf[], void *data) 
+{
+    printf("%s\n", buf);
+}
+
+void generate_func(const char *source, const char *dictionary[], int nwords, char buf[], void *data, void (*process_split)(char buf[], void *data), int start, int end)
+{
+    if (start == strlen(source)) 
+    {
+        buf[end] = '\0';
+        process_split(buf, data);
+        return;
+    }
+
+    char word_in_dictionary[100]; 
+    int w_ind= 0;
+    while (start < strlen(source)) 
+    {
+        word_in_dictionary[w_ind] = source[start];
+        w_ind++;
+        start++;
+        word_in_dictionary[w_ind] = '\0';
+        for (int i = 0; i < nwords; i++) 
+        {
+            if (strcmp(word_in_dictionary, dictionary[i]) == 0) 
+            {
+                strcpy(buf + end, word_in_dictionary);
+                end = end +  strlen(word_in_dictionary);
+                if (start < strlen(source)) 
+                {
+                    buf[end] = ' ';
+                    end++;
                 }
-                strncpy(buf + buf_index, source + start, word_len);
-                generate(start + word_len, buf_index + word_len);
+
+                generate_func(source, dictionary, nwords, buf, data, process_split, start, end);
+
+                end = end -  strlen(word_in_dictionary);
+                if (start < strlen(source)) 
+                {
+                    end--;
+                }
             }
         }
     }
-    
-    generate(0, 0);
 }
 
-
-void process_split(char buf[], void *data) {
-    printf("%s\n", buf);
+void generate_splits(const char *source, const char *dictionary[], int nwords, char buf[], void *data, void (*process_split)(char buf[], void *data))
+{
+    generate_func(source, dictionary, nwords, buf, data, process_split, 0, 0);
 }
 
 /*
