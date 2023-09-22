@@ -103,17 +103,6 @@ void process_split(char buf[], void *data) {
     printf("%s\n", buf);
 }
 
-int main() {
-    const char *source = "applebanana";
-    const char *dictionary[] = {"apple", "banana"};
-    int nwords = 2;
-    char buf[100];
-    
-    generate_splits(source, dictionary, nwords, buf, NULL, process_split);
-    
-    return 0;
-}
-
 /*
  * Transform a[] so that it becomes the previous permutation of the elements in it.
  * If a[] is the first permutation, leave it unchanged.
