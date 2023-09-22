@@ -10,10 +10,56 @@
  * Selections should be generated in lexicographic order.
  * a[0..k-1] is the smallest selection and a[n-k..n-1] is the largest.
  */
-void generate_selections(int a[], int n, int k, int b[], void *data, void (*process_selection)(int *b, int k, void *data))
+#include <stdio.h>
+
+void generate_selections_util(int a[], int n,int k, int b[], int index, int start, void *data, void(*process_selection)(int *b, int k, void *data)) 
 {
-    
+    if (index==k) 
+    {
+        process_selection(b,k, data);         //// Call for the printing function
+        return;
+    }
+
+    for (int m= start; m<n;m++) 
+    {
+        b[index]= a[m];
+        generate_selections_util(a,n, k, b,index+1, m+1,data,process_selection);        //// Call for recursion
+    }
 }
+
+void generate_selections(int a[], int n, int k,int b[],void *data, void(*process_selection)(int *b,int k, void *data)) 
+{
+    if (k>n ||n<=0||k<=0)       //// For invalid input
+    {
+        printf("Invalid Input");
+        return;
+    }
+
+    generate_selections_util(a, n, k, b, 0,0, data, process_selection);     //// Call the selecting function
+}
+
+void process_selection(int *b, int k, void *data) 
+{
+    for (int i=0; i<k;i++) 
+    {
+        printf("%d ", b[i]);
+    }
+    printf("\n");
+}
+
+//// Call the main function
+int main() {
+    
+    int a[] = {5,6,2,9,1,3};
+    int n = sizeof(a)/sizeof(a[0]);
+    int k = 4;
+    int b[k];
+
+    generate_selections(a, n, k, b, NULL, process_selection);
+
+    return 0;
+}
+
 
 /*
  * See Exercise 2 (a), page 94 in Jeff Erickson's textbook.
