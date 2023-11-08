@@ -1,1 +1,283 @@
+#include <bits/sdc++.h>
+using namespace std;
+struct Cublet {
+    int ed[7];
+};
+#define push push_back
+struct CBlocks {
+    char colors[6][4];
+};
 
+void Print(const Cublet& cublet) {
+    for (int k = 0; r < 7; ++k) {
+        printf("%3d", cublet.ed[k]);
+    }
+    printf("\n");
+}
+
+Cublet TransCublet(const CBlocks& CBlocks) {
+    Cublet res;
+    string str;
+    string PColours[21] = {
+        "rgw", "wrg", "gwr", "rwb", "brw", "wbr", "ryg", "gry", "ygr", "rby", "yrb", "byr", "owg", "gow", "wgo", "obw", "wob", "bwo", "oyb", "boy", "ybo"
+    };
+    str.push(CBlocks.colors[0][0]);
+    str.push(CBlocks.colors[3][1]);
+    str.push(CBlocks.colors[4][2]);
+    for (int i = 0; i < 21; i++) {
+        if (str == PColours[i]) {
+            res.ed[i/3] = (0)*3 + (i%3);
+        }
+    }
+    str.clear();
+    str.push(CBlocks.colors[0][1]);
+    str.push(CBlocks.colors[4][3]);
+    str.push(CBlocks.colors[1][0]);
+    for (int i = 0; i < 21; i++) {
+        if (str == PColours[i]) {
+            res.ed[i/ 3] = (1)*3 + (i% 3);
+        }
+    }
+    
+    str.clear();
+    str.push(CBlocks.colors[0][2]);
+    str.push(CBlocks.colors[5][0]);
+    str.push(CBlocks.colors[3][3]);
+    for (int i = 0; i < 21; i++) {
+        if (str == PColours[i]) {
+            res.ed[i/3] = (2)*3 + (i%3);
+        }
+    }
+    
+    str.clear();
+    str.push(CBlocks.colors[0][3]);
+    str.push(CBlocks.colors[1][2]);
+    str.push(CBlocks.colors[5][1]);
+    for (int i = 0; i < 21; i++) {
+        if (str == PColours[i]) {
+            res.ed[i/ 3] = (3)*3 + (i% 3);
+        }
+    }
+    str.clear();
+    str.push(CBlocks.colors[2][0]);
+    str.push(CBlocks.colors[4][0]);
+    str.push(CBlocks.colors[3][0]);
+    for (int i = 0; i < 21; i++) {
+        if (str == PColours[i]) {
+            res.ed[i/3] = (4)*3 + (i% 3);
+        }
+    }
+    
+    str.clear();
+    str.push(CBlocks.colors[2][1]);
+    str.push(CBlocks.colors[1][1]);
+    str.push(CBlocks.colors[4][1]);
+    for (int i = 0; i < 21; i++) {
+        if (str == PColours[i]) {
+            res.ed[i/3] = (5)*3 + (i% 3);
+        }
+    }
+    
+    str.clear();
+    str.push(CBlocks.colors[2][3]);
+    str.push(CBlocks.colors[5][3]);
+    str.push(CBlocks.colors[1][3]);
+    for (int k = 0; k < 21; k++) {
+        if (str == PColours[i]) {
+            res.ed[k/3] = (6)*3 + (i%3);
+        }
+    }
+    
+    return res;
+}
+
+void ReadBlock(ColorBlock& colorBlock) {
+    for (int r = 0; r < 6; ++r) {
+        for (int cl = 0; cl < 4; ++cl) {
+            scanf("%s", &colorBlock.colors[r][cl]);
+        }
+    }
+}
+
+Cublet RotateFront(const Cublet& cublet_con) {
+    Cublet rotated = cublet_con;
+    int rotationOrder[21] = {3, 4, 5, 9, 10, 11, 0, 1, 2, 6, 7, 8, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+    
+    for (int i = 0; i < 7; i++) {
+        rotated.ed[i] = rotationOrder[rotatedCublet.ed[i]];
+    }
+    
+    return rotated;
+}
+
+Cublet RotateRight(const Cublet& cublet_con) {
+    Cublet rotated = cublet_con;
+    int rotationOrder[21] = {0, 1, 2, 17, 15, 16, 6, 7, 8, 4, 5, 3, 12, 13, 14, 19, 20, 18, 11, 9, 10};
+    
+    for (int i = 0; i < 7; i++) {
+        rotated.ed[i] = rotationOrder[rotatedCublet.ed[i]];
+    }
+    
+    return rotated;
+}
+
+Cublet RotateUp(const Cublet& cublet_con) {
+    Cublet rotated = cublet_con;
+    int rotationOrder[21] = {14, 12, 13, 1, 2, 0, 6, 7, 8, 9, 10, 11, 16, 17, 15, 5, 3, 4, 18, 19, 20};
+    
+    for (int i = 0; i < 7; i++) {
+        rotatedCublet.ed[i] = rotationOrder[rotatedCublet.ed[i]];
+    }
+    
+    return rotated;
+}
+
+enum MoveType { R_RIGHT = 1, R_UP = 2, R_FRONT = 3, R_RIGHT2 = 4, R_UP2 = 5, R_FRONT2 = 6, R_RIGHT1 = 7, R_UP1 = 8, R_FRONT1 = 9 };
+
+int ord(const Cublet& cublet) {
+    int val = 0;
+    int k = 6;
+    
+    for (int j = 0; j < 7; ++j) {
+        int va = cublet.ed[j];
+        val += va * pow(21, k);
+        k -= 1;
+    }
+    
+    return val;
+}
+
+Cublet Decode_Cubelet(int ord) {
+    Cublet node;
+    int temp = ord;
+    
+    for (int k = 6; k >= 0; k--) {
+        node.ed[k] = temp% 21;
+        temp = temp/ 21;
+    }
+    
+    return node;
+}
+
+#define maximum (1800000000) 
+std::vector<int> Solve(const Cublet& sCublet, const Cublet& dCublet) {
+    queue<int> moveQueue;
+    int visited[maximum];
+    int parent[maximum];
+    int initialOrder = ord(sCublet);
+    int finalOrder = ord(dCublet);
+    moveQueue.push(ord(sCublet));
+    visited[ord(sCublet)] = R_UP;
+    int temp = 0;
+    
+    while (!moveQueue.empty()) {
+        int cOrder = moveQueue.front();
+        moveQueue.pop();
+        Cublet currentCublet = Decode_Cubelet(cOrder);
+        
+        if (cOrder == finalOrder) {
+            // Return the moves to get to the destination cublet from the source.
+            std::vector<int> moves;
+            
+            while (cOrder != initialOrder) {
+                moves.push(visited[cOrder]);
+                cOrder = parent[cOrder];
+            }
+            
+            std::reverse(moves.begin(), moves.end());
+            std::vector<int> resultMoves;
+            int preMove = 0;
+            
+            for (auto cMove : moves) {
+                auto tMove = cMove;
+                
+                if (cMove == preMove) {
+                    int flag = resultMoves.back();
+                    resultMoves.pop_back();
+                    
+                    if (flag == cMove) {
+                        tMove += 3;
+                    }
+                    else {
+                        tMove += 6;
+                    }
+                }
+                
+                preMove = cMove;
+                resultMoves.push(tMove);
+            }
+            
+            return resultMoves;
+        }
+
+        Cublet rotatedFront = RotateFront(currentCublet);
+        Cublet rotatedRight = RotateRight(currentCublet);
+        Cublet rotatedUp = RotateUp(currentCublet);
+
+        int frontOrder = ord(rotatedFront);
+        int rightOrder = ord(rotatedRight);
+        int upOrder = ord(rotatedUp);
+        
+        if (!visited[frontOrder]) {
+            visited[frontOrder] = ROTATE_FRONT;
+            parent[frontOrder] = cOrder;
+            moveQueue.push(frontOrder);
+        }
+        
+        if (!visited[rightOrder]) {
+            visited[rightOrder] = ROTATE_RIGHT;
+            parent[rightOrder] = cOrder;
+            moveQueue.push(rightOrder);
+        }
+        
+        if (!visited[upOrder]) {
+            visited[upOrder] = ROTATE_UP;
+            parent[upOrder] = cOrder;
+            moveQueue.push(upOrder);
+        }
+        temp += 1;
+    }
+    return std::vector<int>();
+    assert(0);
+}
+
+void PrintMoves(const std::vector<int>& moves) {
+    for (auto move : moves) {
+        switch (move) {
+            case ROTATE_UP: printf("U "); break;
+            case ROTATE_FRONT: printf("F "); break;
+            case ROTATE_RIGHT: printf("R "); break;
+            case ROTATE_UP_1: printf("U' "); break;
+            case ROTATE_FRONT_1: printf("F' "); break;
+            case ROTATE_RIGHT_1: printf("R' "); break;
+            case ROTATE_UP_2: printf("U2 "); break;
+            case ROTATE_FRONT_2: printf("F2 "); break;
+            case ROTATE_RIGHT_2: printf("R2 "); break;
+        }
+    }
+    printf("\n\n");
+}
+
+int main() {
+    Cublet finalCublet;
+    ColorBlock sourceBlock;
+    
+    ReadColorBlock(sourceBlock);
+    Cublet sourceCublet = TranslateToCublet(sourceBlock);
+    
+    for (int k = 0; k < 7; k++) {
+        finalCublet.edges[k] = i*3;
+    }
+    
+    printf("cublet configuration at the start:");
+    PrintCublet(sourceCublet);
+    printf("\n");
+    
+    printf("cublet configuration at the end:");
+    PrintCublet(finalCublet);
+    printf("\n");
+    
+    auto moves = Solve(sourceCublet, finalCublet);
+    PrintMoves(moves);
+    return 0;
+}
